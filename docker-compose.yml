@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  # 1. Сервис модели (API)
+  model_api:
+    build: ./model_api
+    container_name: toxic_model_api
+    volumes:
+      # Пробрасываем локальную папку с моделью ВНУТРЬ контейнера в папку /model
+      - ./rubert_toxic_model:/model
+    ports:
+      - "8000:8000" # Можно стучаться локально curl localhost:8000/predict
+    networks:
+      - ai_net
+
+  # 2. Телеграм бот
+  bot:
+    build: ./bot
+    container_name: toxic_bot
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+    depends_on:
+      - model_api # Ждет запуска модели
+    networks:
+      - ai_net
+
+  # 3. Streamlit (Веб-интерфейс)
+  frontend:
+    build: ./frontend
+    container_name: toxic_frontend
+    ports:
+      - "8501:8501" # Открываем порт наружу
+    depends_on:
+      - model_api
+    networks:
+      - ai_net
+
+networks:
+  ai_net:
+    driver: bridge
