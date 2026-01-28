@@ -34,5 +34,12 @@
 
 <img width="1324" height="695" alt="image" src="https://github.com/user-attachments/assets/ceb27278-7e14-48f9-a49f-a7d9141ce99a" />
 
-##
+## Тестирование 
 
+```
+# Тесты для API
+docker exec -it toxic_model_api pytest test_main.py
+
+# Тесты для Бота
+docker exec -it toxic_bot pytest test_bot.py
+```
